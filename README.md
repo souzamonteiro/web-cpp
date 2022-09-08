@@ -1,2 +1,2 @@
-# web-cpp
-Compiler for the Web-C++ programming language
+# Web-C++
+Compiler for the Web-C++ programming language.
