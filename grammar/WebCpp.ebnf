@@ -1,0 +1,211 @@
+webcpp                   ::= expression*
+                           | eof
+
+operation                ::= variableAssignment
+variableAssignment       ::= logicalORExpression (('=') logicalORExpression)*
+logicalORExpression      ::= logicalANDExpression ('||' logicalANDExpression)*
+logicalANDExpression     ::= bitwiseORExpression ('&&' bitwiseORExpression)*
+bitwiseORExpression      ::= bitwiseXORExpression ('|' bitwiseXORExpression)*
+bitwiseXORExpression     ::= bitwiseANDExpression ('^' bitwiseANDExpression)*
+bitwiseANDExpression     ::= equalityExpression ('&' equalityExpression)*
+equalityExpression       ::= relationalExpression (('==' | '!=') relationalExpression)*
+relationalExpression     ::= shiftExpression (('<' | '>' | '<=' | '>=') shiftExpression)*
+shiftExpression          ::= additiveExpression (('<<' | '>>' | '<<=' | '>>=') additiveExpression)*
+additiveExpression       ::= multiplicativeExpression (('+' | '-' | '+=' | '-=') multiplicativeExpression)*
+multiplicativeExpression ::= unaryExpression (('*' | '/' | '%' | '*=' | '/=' | '%=') unaryExpression)*
+unaryExpression          ::= '~' primary
+                           | '!' primary
+                           | '*' primary
+                           | '++' primary
+                           | '--' primary
+                           | primary '++'
+                           | primary '--'
+                           | primary
+                           
+primary                  ::= member
+                           | value
+                           | parenthesizedExpression
+
+statement                ::= preprocessorDirective
+                           | class
+                           | accessDefinition
+                           | namespace
+                           | using
+                           | functionDefinition
+                           | variableDefinition
+                           | template
+                           | if
+                           | do
+                           | while
+                           | for
+                           | try
+                           | break
+                           | continue
+                           | return
+                           | throw
+                           
+preprocessorDirective    ::= defineDirective
+                           | ifStatementDirective
+                           | errorDirective
+                           | importDirective
+                           | includeDirective
+                           | undefDirective
+                           | usingDirective
+
+defineDirective          ::= '#' 'define' identifier expression
+                           | '#' 'define' identifier '(' arguments? ')' expression
+
+ifStatementDirective     ::= (ifDirective | ifdefDirective | ifndefDirective) elifDirective* elseDirective? endifDirective
+ifDirective              ::= '#' 'if' expression lineTerminator unicode lineTerminator
+ifdefDirective           ::= '#' 'ifdef' identifier lineTerminator unicode lineTerminator
+ifndefDirective          ::= '#' 'ifndef' identifier lineTerminator unicode lineTerminator
+elifDirective            ::= '#' 'elif' expression lineTerminator unicode lineTerminator
+elseDirective            ::= '#' 'else' lineTerminator unicode lineTerminator
+endifDirective           ::= '#' 'endif'
+
+errorDirective           ::= '#' 'error' string
+importDirective          ::= '#' 'import' string
+                           | '#' 'import' '<' unicode '>'
+includeDirective         ::= '#' 'include' string
+                           | '#' 'include' '<' unicode '>'
+undefDirective           ::= '#' 'undef' identifier
+usingDirective           ::= '#' 'using' string
+
+class                    ::= 'class' identifier '{' expression* '}'
+accessDefinition         ::= 'private' ':'
+                           | 'protected' ':'
+                           | 'public' ':'
+namespace                ::= 'namespace' identifier '{' expression* '}'
+using                    ::= 'using' identifier
+                           | 'using' 'namespace' identifier
+functionDefinition       ::= type identifier '(' arguments? ')' '{' expression* '}'
+variableDefinition       ::= type identifier (',' identifier)*
+template                 ::= 'template' '<' ('class' | 'typename') identifier '>'
+if                       ::= 'if' '(' expression ')' '{' expression* '}' elseif* else?
+elseif                   ::= 'else if' '(' expression ')' '{' expression* '}'
+else                     ::= 'else' '{' expression* '}'
+do                       ::= 'do' '{' expression* '}' 'while' '(' expression ')'
+while                    ::= 'while' '(' expression ')' '{' expression* '}'
+for                      ::= 'for' '(' expression? ';' expression? ';' expression? ')' '{' expression* '}'
+try                      ::= 'try' '{' expression* '}' catch?
+catch                    ::= 'catch' '(' expression ')' '{' expression* '}'
+break                    ::= 'break'
+continue                 ::= 'continue'
+return                   ::= 'return' expression?
+throw                    ::= 'throw' expression
+
+type                     ::= 'void'
+                           | 'char'
+                           | 'int'
+                           | 'long'
+                           | 'float'
+                           | 'double'
+
+expression               ::= statement
+                           | operation
+                           | comment
+                           | ';'
+
+arguments                ::= expression (',' expression)*
+
+member                   ::= identifier ('.' identifier)* '(' arguments* ')'
+                           | identifier ('.' identifier)* ('[' arguments ']')*
+                           | identifier ('->' identifier)* '(' arguments* ')'
+                           | identifier ('->' identifier)* ('[' arguments ']')*
+
+array                    ::= '{' element (',' element)* '}'
+matrix                   ::= '[' row? (';' row)* ']'
+
+element                  ::= (key ':')? expression
+key                      ::= identifier
+                           | string
+
+row                      ::= column (',' column)*
+column                   ::= expression
+
+parenthesizedExpression  ::= '(' expression ')'
+
+value                    ::= real
+                           | complex
+                           | string
+                           | array
+                           | matrix
+                           | null
+                           | true
+                           | false
+
+<?TOKENS?>
+
+eof                      ::= $
+
+identifier               ::= (firstIdentifierChar (identifierChar)*) - reservedWord
+                           
+reservedWord             ::= keyword
+                           | nullLiteral
+                           | booleanLiteral
+
+keyword  ::= 'namespace'
+           | 'using'
+           | 'class'
+           | 'private'
+           | 'protected'
+           | 'public'
+           | 'operator'
+           | 'void'
+           | 'char'
+           | 'int'
+           | 'long'
+           | 'float'
+           | 'double'
+           | 'template'
+           | 'if'
+           | 'else'
+           | 'do'
+           | 'while'
+           | 'for'
+           | 'try'
+           | 'catch'
+           | 'break'
+           | 'continue'
+           | 'return'
+           | 'throw'
+           
+nullLiteral              ::= null
+booleanLiteral           ::= true
+                           | false
+
+null                     ::= 'null'
+true                     ::= 'true'
+false                    ::= 'false'
+
+firstIdentifierChar      ::= '$' | '_' | [A-Za-z]
+identifierChar           ::= '$' | '_' | [0-9] | [A-Za-z]
+
+string                   ::= '"' (unicode | '\"' | '\\' | '\/' | '\b' | '\f' | '\n' | '\r' | '\t')* '"'
+
+unicode                  ::= alphabet - ["#x005C]
+alphabet                 ::= whitespace
+                           | #x000A
+                           | #x000D
+                           | [#x0020-#xD7FF]
+                           | [#xE000-#xFFFD]
+                           | [#x10000-#x10FFFF]
+
+complex                  ::= real? imaginary
+real                     ::= '-'? integer ('.' integer)? (('e' | 'E') ('+' | '-')? integer)?
+integer                  ::= digit+
+imaginary                ::= (('+' | '-')? real '*' 'i')
+digit                    ::= [0-9]
+
+comment                  ::= singleLineComment | blockComment
+singleLineComment        ::= '//' (sourceCharacter - lineTerminator)*
+blockComment             ::= '/*' sourceCharacter* '*/'
+
+sourceCharacter          ::= .
+lineTerminator
+         ::= #x000A
+           | #x000D
+           | #x2028
+           | #x2029
+
+whitespace               ::= [#x0009#x0020]+
