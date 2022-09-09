@@ -52,29 +52,29 @@ preprocessorDirective    ::= defineDirective
                            | undefDirective
                            | usingDirective
 
-defineDirective          ::= '#' 'define' identifier expression
-                           | '#' 'define' identifier '(' arguments? ')' expression
+defineDirective          ::= '#define' identifier expression
+                           | '#define' identifier '(' arguments? ')' expression
 
 ifStatementDirective     ::= (ifDirective | ifdefDirective | ifndefDirective) elifDirective* elseDirective? endifDirective
-ifDirective              ::= '#' 'if' expression lineTerminator unicode lineTerminator
-ifdefDirective           ::= '#' 'ifdef' identifier lineTerminator unicode lineTerminator
-ifndefDirective          ::= '#' 'ifndef' identifier lineTerminator unicode lineTerminator
-elifDirective            ::= '#' 'elif' expression lineTerminator unicode lineTerminator
-elseDirective            ::= '#' 'else' lineTerminator unicode lineTerminator
-endifDirective           ::= '#' 'endif'
+ifDirective              ::= '#if' expression lineTerminator unicode lineTerminator
+ifdefDirective           ::= '#ifdef' identifier lineTerminator unicode lineTerminator
+ifndefDirective          ::= '#ifndef' identifier lineTerminator unicode lineTerminator
+elifDirective            ::= '#elif' expression lineTerminator unicode lineTerminator
+elseDirective            ::= '#else' lineTerminator unicode lineTerminator
+endifDirective           ::= '#endif'
 
-errorDirective           ::= '#' 'error' string
-importDirective          ::= '#' 'import' string
-                           | '#' 'import' '<' unicode '>'
-includeDirective         ::= '#' 'include' string
-                           | '#' 'include' '<' unicode '>'
-undefDirective           ::= '#' 'undef' identifier
-usingDirective           ::= '#' 'using' string
+errorDirective           ::= '#error' string
+importDirective          ::= '#import' string
+                           | '#import' '<' unicode '>'
+includeDirective         ::= '#include' string
+                           | '#include' '<' unicode '>'
+undefDirective           ::= '#undef' identifier
+usingDirective           ::= '#using' string
 
 class                    ::= 'class' identifier '{' expression* '}'
-accessDefinition         ::= 'private' ':'
-                           | 'protected' ':'
-                           | 'public' ':'
+accessDefinition         ::= 'private:'
+                           | 'protected:'
+                           | 'public:'
 namespace                ::= 'namespace' identifier '{' expression* '}'
 using                    ::= 'using' identifier
                            | 'using' 'namespace' identifier
